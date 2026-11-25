@@ -60,10 +60,19 @@ out += ["## Timestamp ties (matters for the replay order)", "", table(
         SELECT count(*) AS n FROM crashes WHERE exclusion_reason IS NULL
         GROUP BY occurred_at) t""")), ""]
 
+out += ["## Time precision (minutes)", "",
+        "Uniform minutes would give 1.7% / 20% / 6.7%.", "", table(
+    ["% at minute :00", "% at multiples of 5", "% at multiples of 15"],
+    rows("""SELECT round(100.0*count(*) FILTER (WHERE extract(minute FROM occurred_at)::int = 0)/count(*),1),
+        round(100.0*count(*) FILTER (WHERE extract(minute FROM occurred_at)::int % 5 = 0)/count(*),1),
+        round(100.0*count(*) FILTER (WHERE extract(minute FROM occurred_at)::int % 15 = 0)/count(*),1)
+        FROM crashes WHERE exclusion_reason IS NULL""")), ""]
+
 out += ["## Limits of these checks", "",
         "- Coordinate checks confirm format and plausibility, not that a point is on the right road.",
         "- Code meanings (`grav`, `lum`, `atm`, ...) are not yet verified against each year's official description.",
-        "- No exposure data (traffic volume): counts are not risk per vehicle-km.", ""]
+        "- No exposure data (traffic volume): counts are not risk per vehicle-km.", ""
+        "- Times are rounded (recorded mostly at multiples of 5 minutes), so order within a quarter hour is not meaningful.",]
 
 with open("docs/quality-report.md", "w", encoding="utf-8") as f:
     f.write("\n".join(out))
