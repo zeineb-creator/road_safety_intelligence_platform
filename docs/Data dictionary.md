@@ -1,0 +1,111 @@
+# Data dictionary: BAAC (road crashes, France)
+
+Source: data.gouv.fr, "Bases de données annuelles des accidents corporels de la
+circulation routière", Ministère de l'intérieur / ONISR.
+License: Licence Ouverte. Downloaded: 2026-11-25.
+Years analyzed so far: 2023 (other years pending).
+
+Files named `vehicules-immatricule*` belong to a separate registration dataset
+and are not used.
+
+## 1. Tables and grain
+
+| Table | File pattern | Grain | 2023 rows | Distinct Num_Acc |
+|---|---|---|---|---|
+| Characteristics | caract / carcteristiques / Caract | 1 row per accident | 54,822 | 54,822 |
+| Places | lieux / Lieux | 1 row per road involved | 70,860 | 54,822 |
+| Vehicles | vehicules / Vehicules | 1 row per vehicle | 93,585 | 54,822 |
+| Users | usagers / Usagers | 1 row per person | 125,789 | 54,822 |
+
+- Join key: `Num_Acc` (12-digit accident ID, clean text).
+- Reference count for 2023: **54,822 accidents**.
+- Only Characteristics has one row per accident. Joining the other tables
+  directly duplicates accidents, so they are aggregated to accident level first.
+- File names are inconsistent across years (typo `carcteristiques` in 2022,
+  mixed case and separators), so files are matched by prefix, not by exact name.
+
+## 2. Format observations
+
+- **Reading:** all files are read as text (`;` separator, `utf-8-sig`), then
+  converted deliberately.
+- **Decimal commas:** `lat` and `long` are text like `48,86638600`.
+  Conversion requires replacing the comma with a point.
+- **IDs with spaces:** `id_vehicule` and `id_usager` contain spaces
+  (`155 680 557`). `Num_Acc` has none (the website only displays spaces).
+- **Date and time are split** across `jour`, `mois`, `an`, `hrmn` (`06:00`).
+  There are no seconds, so many accidents share the same timestamp.
+  Replay order: timestamp, then `Num_Acc`.
+- **Special values:** `-1` means "not specified" (per BAAC documentation, to be
+  verified against the official description file) and empty cells appear as
+  NaN. Neither is a real measurement.
+- **Missing values (2023):** `adr` 1,389 (Characteristics); `voie` 12,747,
+  `v2` 64,976, `lartpc` 70,829 (Places); `occutc` 92,747 (Vehicles);
+  `an_nais` 2,598 (Users).
+- **Severity** is in `grav` (Users): 1 unharmed, 2 killed, 3 hospitalized,
+  4 slight injury. The codes are NOT ordered by severity, so `grav` is never
+  used as a number. An explicit weight mapping will be defined.
+- **`dep`:** metropolitan codes have at most 2 characters (including Corsica
+  `2A`, `2B`); overseas codes have 3 digits (for example `971`).
+
+## 3. Coordinate quality (2023)
+
+| Check | Result |
+|---|---|
+| `lat` / `long` not numeric | 0 |
+| `lat` or `long` equal to 0 | 0 |
+| Metropolitan rows outside France bounds | 0 (of 51,641) |
+| Overseas rows | 3,181 (5.8%), excluded from road-network snapping |
+
+Real precision of `lat` (number of decimals after removing trailing zeros;
+the file pads every value to 8 decimals):
+
+| Real decimals | Rows | Share | Approx. resolution |
+|---|---|---|---|
+| 0-3 | 754 | 1.4% | 100 m or worse |
+| 4 | 2,741 | 5.0% | about 10 m |
+| 5-8 | 51,327 | 93.6% | about 1 m or better |
+
+- Number of decimals measures how finely a value is written, not whether the
+  location is correct.
+- Rows with 4 decimals or fewer (3,495, 6.4%) will be flagged as low
+  precision at the snapping step.
+- One row has 0 decimals (probable placeholder), to be inspected manually.
+- Rows with 7 decimals (1,147) vs 8 (9,267) suggest mixed recording methods.
+  This is an observation, not a confirmed explanation.
+
+## 4. Changes between years
+
+| Places | lieux / Lieux | 2019-2022: 1 row per accident; from 2023: 1 row per road involved | 70,860 (2023) | 54,822 |
+
+## 4. Changes between years (2019-2025)
+
+- All files: `;` separator, `utf-8-sig` encoding, in every year.
+- **Accident ID column:** `Accident_Id` in the 2022 characteristics file;
+  `Num_Acc` everywhere else. Normalized to `Num_Acc` on load.
+- **Places grain:** 1 row per accident in 2019-2022; several rows per
+  accident from 2023 (one per road). Aggregated to accident level before joins.
+- File names differ between years, so they are matched by prefix.
+
+Accidents per year (distinct IDs; reconciliation targets):
+
+| Year | Accidents |
+|---|---|
+| 2019 | 58,840 |
+| 2020 | 47,744 |
+| 2021 | 56,518 |
+| 2022 | 55,302 |
+| 2023 | 54,822 |
+| 2024 | 54,402 |
+| 2025 | 55,093 |
+
+2020 is about 19% below 2019 (COVID restrictions), so it is treated
+separately in the hotspot backtest.
+
+To complete: column differences per table and year, ID format, coordinate
+quality per year.
+
+## 5. Exclusions (to be finalized)
+
+- Overseas accidents: excluded from road-network snapping (valid records,
+  outside the chosen region).
+- Records with unusable coordinates: excluded and counted per year.
