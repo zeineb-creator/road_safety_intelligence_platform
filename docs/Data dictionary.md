@@ -79,30 +79,17 @@ the file pads every value to 8 decimals):
 
 ## 4. Changes between years (2019-2025)
 
-- All files: `;` separator, `utf-8-sig` encoding, in every year.
-- **Accident ID column:** `Accident_Id` in the 2022 characteristics file;
-  `Num_Acc` everywhere else. Normalized to `Num_Acc` on load.
-- **Places grain:** 1 row per accident in 2019-2022; several rows per
-  accident from 2023 (one per road). Aggregated to accident level before joins.
-- File names differ between years, so they are matched by prefix.
+- All files: `;` separator, `utf-8-sig` encoding, every year.
+- `Num_Acc`: 12 characters in every year. In the 2022 characteristics file the
+  column is named `Accident_Id` (normalized to `Num_Acc` on load).
+- `id_usager` is absent from the users files of 2019 and 2020 (present from 2021).
+- Places grain: 1 row per accident in 2019-2022; several per accident from 2023.
+- The four tables contain exactly the same set of accident IDs in every year.
+- Not yet verified: whether code meanings changed between years (to be compared
+  with each year's official description file before using a code column).
 
-Accidents per year (distinct IDs; reconciliation targets):
-
-| Year | Accidents |
-|---|---|
-| 2019 | 58,840 |
-| 2020 | 47,744 |
-| 2021 | 56,518 |
-| 2022 | 55,302 |
-| 2023 | 54,822 |
-| 2024 | 54,402 |
-| 2025 | 55,093 |
-
-2020 is about 19% below 2019 (COVID restrictions), so it is treated
-separately in the hotspot backtest.
-
-To complete: column differences per table and year, ID format, coordinate
-quality per year.
+Accidents per year (reconciliation targets): 2019 58,840 | 2020 47,744 |
+2021 56,518 | 2022 55,302 | 2023 54,822 | 2024 54,402 | 2025 55,093.
 
 ## 5. Exclusions (to be finalized)
 
