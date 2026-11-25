@@ -113,3 +113,21 @@ Accidents per year (reconciliation targets): 2019 58,840 | 2020 47,744 |
 - Most repeated coordinate pair per year: at most 18 rows, so no large default
   location was found among the top 3 pairs. Overseas pairs (for example
   Tahiti, lat about -17.5) are valid and excluded by the dep rule.
+
+
+  ## 6. Table `crashes` (PostGIS, one row per accident, 2019-2025)
+
+Built by `scripts/load_baac.py` from the Characteristics table, plus counts
+aggregated from Users and Vehicles.
+
+- `accident_id` (primary key), `year`, `occurred_at` (date + time, no seconds)
+- `dep`, `com`, `adr`, `lum`, `atm`, `col`, `agg`, `intersection`
+- `lat`, `lon` (decimal degrees) and `geom` (Point, SRID 4326)
+- `n_vehicles`, `n_users`, `n_killed`, `n_hospitalized`, `n_slight`, `n_unhurt`
+  (counted from `grav` in the Users table)
+- `exclusion_reason`: NULL = usable; `overseas`, `bad_coordinates` or
+  `bad_datetime`. Excluded rows are kept, never deleted, so counts reconcile
+  with the source. Analytics filter on `exclusion_reason IS NULL`.
+
+Reconciliation: rows, overseas and bad-coordinate counts per year match the
+independent checks, and the load is one transaction (all or nothing).
