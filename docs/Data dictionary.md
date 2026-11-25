@@ -106,6 +106,23 @@ quality per year.
 
 ## 5. Exclusions (to be finalized)
 
-- Overseas accidents: excluded from road-network snapping (valid records,
-  outside the chosen region).
-- Records with unusable coordinates: excluded and counted per year.
+### Coordinate exclusions (2019-2025)
+
+| Year | Num_Acc | dep | Problem | Decision |
+|---|---|---|---|---|
+| 2019 | 201900033874 | 93 | lat = long = 11 (placeholder) | Excluded |
+| 2024 | 202400008235 | 2B | lat/long swapped | Excluded |
+| 2024 | 202400011273 | 2B | lat/long swapped | Excluded |
+| 2024 | 202400013466 | 2B | lat/long swapped | Excluded |
+| 2025 | 202500038525 | 2B | lat/long swapped | Excluded |
+
+- Rule: exclude rather than repair, and list every exclusion here.
+- Number of padded zeros in `lat`/`long` varies by year (7 digits in 2019-2020,
+  10 in 2021-2022, 8 in 2023-2025), so real precision is measured after
+  removing trailing zeros.
+- Share of rows with 4 or fewer real decimals (about 10 m or worse):
+  2019 9.4%, 2020 8.7%, 2021 6.7%, 2022-2025 6.3-6.4%.
+  2019-2020 are slightly coarser, noted for the backtest.
+- Most repeated coordinate pair per year: at most 18 rows, so no large default
+  location was found among the top 3 pairs. Overseas pairs (for example
+  Tahiti, lat about -17.5) are valid and excluded by the dep rule.
