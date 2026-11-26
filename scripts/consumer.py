@@ -107,6 +107,7 @@ consumer = Consumer({
     "group.id": args.group,
     "auto.offset.reset": "earliest",
     "enable.auto.commit": False,
+    "session.timeout.ms": 10000,
 })
 consumer.subscribe(["crashes.raw"])
 producer = Producer({"bootstrap.servers": "localhost:9092"})
@@ -119,6 +120,7 @@ def dead_letter(msg, error):
 
 
 saved = rejected = 0
+t_first = t_work = None
 last_message = time.monotonic()
 print(f"consumer started (group={args.group}, snap<={args.snap_max_m} m, h3 res {args.h3_res})")
 try:
@@ -129,6 +131,8 @@ try:
                 break
             continue
         last_message = time.monotonic()
+        if t_first is None:
+            t_first = last_message
 
         events = []
         for m in msgs:
@@ -169,6 +173,7 @@ try:
             os._exit(1)                   # 2. dead-letter messages are delivered
         consumer.commit(asynchronous=False)  # 3. only now move the bookmark
         saved += len(events)
+        t_work = time.monotonic()
         print(f"saved {saved} | rejected {rejected}")
 except KeyboardInterrupt:
     print("stopping")
@@ -176,3 +181,5 @@ finally:
     consumer.close()
     conn.close()
     print(f"final: saved {saved}, rejected {rejected}")
+    if t_first and t_work and saved:
+        print(f"throughput: {saved / max(t_work - t_first, 0.001):.0f} events/s")
