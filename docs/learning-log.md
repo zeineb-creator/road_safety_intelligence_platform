@@ -236,6 +236,20 @@ test-year junction crashes captured by past raw counts:
   than the budget has nodes; it says nothing at large budgets.
 - PAI is generous: the node universe covers the whole hull around the region.
 
+### Mid-block segments (intersection code 1 only, 15,794 segments with a crash)
+
+Mean share of test-year crashes captured, top 1/2/5/10% of road length:
+raw count 11.6 / 20.9 / 39.6 / 53.8; density 100 m floor 13.5 / 22.5 / 39.0 / 54.0;
+density 250 m floor 14.4 / 23.9 / 40.8 / 54.7; severity weight 11.4 / 20.3 / 37.7 / 52.4.
+
+- The density gain over raw count falls from +3.9..+5.0 (all crashes) to
+  -0.7..+2.8 once junction crashes are removed, which supports the hypothesis
+  that junction pieces explained part of it.
+- The better floor differs between the two sets (100 m, then 250 m), so no
+  floor is declared best.
+- Severity weighting did not help in any of the three backtests.
+- The count oracle saturates at 10% of road length (99.3%).
+
 
 ## Open questions
 

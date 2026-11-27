@@ -61,6 +61,22 @@ Study region: **84,516** usable accidents in départements 75, 92, 93 and 94 (20
 
 `scripts/check_pipeline.py` runs 11 automatic checks (counts, duplicates, severity totals, row-by-row comparison with the source, snap status, H3 cells).
 
+**Hotspot backtest** (rolling origin: train on all years before the test year,
+test years 2021-2025, mean share of test-year crashes captured):
+
+| Unit and budget | Past raw count | Best variant tested | Even spread |
+|---|---|---|---|
+| H3 cells (res. 9), top 5% of cells | 22.9% | Gi* 18.5% (worse) | 5% |
+| Road segments, top 5% of road length | 26.4% | density, 100 m floor: 30.6% | 5% |
+| Road segments, mid-block crashes, top 5% of length | 39.6% | density, 250 m floor: 40.8% | 5% |
+| Junction nodes, top 5% of nodes | 41.6% | not tested | 5% |
+
+- Gi*, neighbor smoothing and severity weights did not beat plain past counts.
+- 22-45% of crashes happen at places with no crash in the training years.
+- Rows are not comparable (different units and universes); no exposure data, so
+  this measures where crashes happen, not risk per vehicle-km.
+
+  
 ## Quick start (Windows PowerShell)
 
 Requirements: Docker Desktop, Git, Python 3.11+.
