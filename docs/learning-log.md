@@ -215,6 +215,13 @@ Mean share of test-year crashes captured, top share of road length:
 - The densest urban blocks reach 200-340 crashes per km, about 10 times the
   motorway average.
 
+  - Road nodes rebuilt from the edge ends (72,009 nodes); no node has two
+  positions. Distance from a crash to the nearest node: median 3.4 m for
+  junction-coded crashes (41,013), 43.2 m for the others (43,502); 9.8% of
+  junction-coded crashes are farther than 30 m.
+- The 30 m assignment threshold and the "3 or more segments" junction rule are my
+  choices, not facts from the data.
+
   
 ## Open questions
 
