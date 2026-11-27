@@ -222,7 +222,21 @@ Mean share of test-year crashes captured, top share of road length:
 - The 30 m assignment threshold and the "3 or more segments" junction rule are my
   choices, not facts from the data.
 
-  
+  ### Junction-level backtest (nodes with 3+ segments, 62,817 nodes)
+
+Crashes with intersection code 2-9 (41,013) are assigned to the nearest
+junction node within 30 m (my choice; 36,885 assigned, 89.9%). Rolling design as
+before; budget = share of junction nodes. Mean over 5 splits, share of
+test-year junction crashes captured by past raw counts:
+1% of nodes 17.2%, 2% 25.9%, 5% 41.6%, 10% 55.7% (even spread: 1/2/5/10%).
+
+- Only 14,724 nodes (23%) had an assigned crash in 2019-2025.
+- 27-45% of junction crashes occur at nodes with no crash in the training years.
+- The oracle saturates (100% at 10% of nodes) because a year has fewer crashes
+  than the budget has nodes; it says nothing at large budgets.
+- PAI is generous: the node universe covers the whole hull around the region.
+
+
 ## Open questions
 
 - Why are 706 crashes more than 50 m from a drivable road? (Compare with the

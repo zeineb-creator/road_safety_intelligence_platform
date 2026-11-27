@@ -181,6 +181,12 @@ the study region's usable crashes plus a margin of 0.005 degrees.
   they share both endpoints, the OSM id and the length. Snapping uses this
   table.
 
+- `road_nodes`: 72,009 nodes rebuilt from the ends of `road_segments`
+  (`scripts/sql/road_nodes.sql`).
+- `road_junctions`: 62,817 nodes with 3 or more segments, with `degree`
+  (`scripts/sql/road_junctions.sql`).
+
+  
 ## 9. Table `crash_events` (output of the consumer)
 
 One row per accident of the study region, upserted by `accident_id`.
