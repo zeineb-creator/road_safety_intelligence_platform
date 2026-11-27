@@ -74,6 +74,7 @@ for frac in FRACTIONS:
     nseg = int(sub[sub["method"] == "raw count"]["n_segments"].mean())
     print(f"\n=== top {frac:.0%} of road length (about {nseg} segments): % of test-year crashes captured ===")
     print(wide.round(1).to_string())
+    print("average segments selected:", sub.groupby("method")["n_segments"].mean().round(0).to_dict())
     print("mean over splits:", {k: round(v, 1) for k, v in wide.mean().items()},
           "| uniform per km would capture:", f"{frac * 100:.0f}")
     d = wide["raw count"] - wide["severity weight"]

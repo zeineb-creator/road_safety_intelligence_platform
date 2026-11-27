@@ -170,6 +170,28 @@ are excluded. Mean over 5 splits (2021-2025), share of test-year crashes capture
 - Hypothesis, not tested: simplification splits a junction's crashes between the
   segments that meet there.
   
+  ### Density variants (crashes per km, with a minimum length)
+
+Score = training crashes / max(segment length, floor). Floors of 100 m (about
+the average segment length) and 250 m were chosen by me, not tuned.
+Mean share of test-year crashes captured, top share of road length:
+
+| Share | Raw count | Density 100 m | Density 250 m | Count oracle | Density oracle |
+|---|---|---|---|---|---|
+| 1% | 6.1% | 10.1% | 9.6% | 8.0% | 21.3% |
+| 2% | 11.9% | 16.9% | 16.1% | 15.1% | 34.9% |
+| 5% | 26.4% | 30.6% | 29.6% | 40.7% | 67.6% |
+| 10% | 41.3% | 45.2% | 43.9% | 74.3% | 91.8% |
+
+- Both density rankings beat raw count in 5/5 splits at every fraction
+  (+2.7 to +5.0 points). The 100 m floor did better than 250 m.
+- A density ranking trained on past years beats the count oracle at 1% and 2%,
+  so the count oracle was not a ceiling. The density oracle is a hindsight
+  upper bound that fits one year's noise.
+- Hypothesis, not tested: part of the gain comes from short segments (junction
+  pieces) that are cheap in a length budget.
+
+  
 ## Open questions
 
 - Why are 706 crashes more than 50 m from a drivable road? (Compare with the
