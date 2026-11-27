@@ -66,10 +66,7 @@ for ty in TEST_YEARS:
             sel = select_by_length(score, frac)
             rows.append({"test_year": ty, "method": name, "frac": frac,
                          "n_segments": len(sel), "capture": test_n.loc[sel].sum() / total})
-            for other in ("density, 100 m floor", "density, 250 m floor"):
-                d2 = wide[other] - wide["raw count"]
-                print(f"{other} minus raw count: mean {d2.mean():+.1f} pts, better in {(d2 > 0).sum()}/{len(d2)} splits")
-
+            
 res = pd.DataFrame(rows)
 for frac in FRACTIONS:
     sub = res[res["frac"] == frac]
@@ -81,3 +78,6 @@ for frac in FRACTIONS:
           "| uniform per km would capture:", f"{frac * 100:.0f}")
     d = wide["raw count"] - wide["severity weight"]
     print(f"raw count minus severity weight: mean {d.mean():+.1f} pts, raw better in {(d > 0).sum()}/{len(d)} splits")
+    for other in ("density, 100 m floor", "density, 250 m floor"):
+        d2 = wide[other] - wide["raw count"]
+        print(f"{other} minus raw count: mean {d2.mean():+.1f} pts, better in {(d2 > 0).sum()}/{len(d2)} splits")
