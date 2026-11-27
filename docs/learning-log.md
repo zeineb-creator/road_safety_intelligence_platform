@@ -147,6 +147,29 @@ hypotheses.
   size, only crash capture, and study cells restricted to cells with at least
   one crash in 2019-2025.
 
+### Segment-level backtest (budget = share of road length, 106,882 segments, 10,955 km)
+
+Same rolling design as the cell backtest. Far crashes (706) have no segment and
+are excluded. Mean over 5 splits (2021-2025), share of test-year crashes captured:
+
+| Top share of road length | Raw count | Severity weight | Oracle by count |
+|---|---|---|---|
+| 1% | 6.1% | 6.2% | 8.0% |
+| 2% | 11.9% | 11.3% | 15.1% |
+| 5% | 26.4% | 24.3% | 40.7% |
+| 10% | 41.3% | 39.7% | 74.3% |
+
+- Only 29,969 segments (28%) have a snapped crash in 2019-2025. 22-41% of
+  test-year crashes are on segments with no crash in the training years.
+- Raw count reaches 56-79% of the oracle (91% at cell level): segment-level
+  ranking is much noisier.
+- Severity weighting was worse than raw count at 2%, 5% and 10% (5/5 splits).
+- Ranking by count under a length budget picks long segments (top 1% of length =
+  77 segments, about 1.4 km each, against 0.1 km on average), and the oracle by
+  count is therefore not a true ceiling. Density rankings are the next test.
+- Hypothesis, not tested: simplification splits a junction's crashes between the
+  segments that meet there.
+  
 ## Open questions
 
 - Why are 706 crashes more than 50 m from a drivable road? (Compare with the

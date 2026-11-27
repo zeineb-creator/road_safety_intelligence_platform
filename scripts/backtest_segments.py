@@ -53,12 +53,22 @@ for ty in TEST_YEARS:
     total = test_n.sum()
     unseen = test_n[train_n == 0].sum() / total
     print(f"test {ty}: {int(total)} snapped crashes, {unseen:.1%} on segments with no crash in the training years")
-    for name, score in {"raw count": train_n, "severity weight": train_s,
-                        "ORACLE (test year)": test_n}.items():
+    length_m = seg["length_m"]
+    for name, score in {
+        "raw count": train_n,
+        "severity weight": train_s,
+        "density, 100 m floor": train_n / length_m.clip(lower=100),
+        "density, 250 m floor": train_n / length_m.clip(lower=250),
+        "ORACLE count (test year)": test_n,
+        "ORACLE density (test year)": test_n / length_m.clip(lower=100),
+    }.items():
         for frac in FRACTIONS:
             sel = select_by_length(score, frac)
             rows.append({"test_year": ty, "method": name, "frac": frac,
                          "n_segments": len(sel), "capture": test_n.loc[sel].sum() / total})
+            for other in ("density, 100 m floor", "density, 250 m floor"):
+                d2 = wide[other] - wide["raw count"]
+                print(f"{other} minus raw count: mean {d2.mean():+.1f} pts, better in {(d2 > 0).sum()}/{len(d2)} splits")
 
 res = pd.DataFrame(rows)
 for frac in FRACTIONS:
