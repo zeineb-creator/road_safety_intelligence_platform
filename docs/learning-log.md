@@ -191,6 +191,19 @@ Mean share of test-year crashes captured, top share of road length:
 - Hypothesis, not tested: part of the gain comes from short segments (junction
   pieces) that are cheap in a length budget.
 
+  - What the rankings select (training 2019-2024). Top 15 by raw count: 14
+  motorway/tunnel segments (0.9-4.4 km) plus the Périphérique. Top 15 by density:
+  urban blocks and squares (Boulevard Saint-Denis, Concorde, République, Rue
+  Ordener...), 11-166 m long. Some are pieces of a junction (11-13 m segments
+  with 19-27 crashes), some are real short blocks.
+- At the top 1% of road length (about 110 km), raw count selects 78 segments
+  (about 1.4 km each), density with a 100 m floor 872 (about 130 m each).
+- Without traffic volumes, neither ranking measures risk: motorways carry more
+  vehicles per km. Deaths are rare at segment level (most top segments have 0).
+- Hypothesis, not tested: junction crashes are split between the pieces of a
+  junction by nearest-segment snapping, so the density winners partly reflect
+  how OSM cuts junctions.
+
   
 ## Open questions
 
