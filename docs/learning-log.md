@@ -204,6 +204,17 @@ Mean share of test-year crashes captured, top share of road length:
   junction by nearest-segment snapping, so the density winners partly reflect
   how OSM cuts junctions.
 
+  - Intersection code (study region, 84,516 crashes; code meanings from memory,
+  to verify in the BAAC description file): 51.5% outside an intersection,
+  39.8% at X/T/Y/5+ branch junctions, 4.8% roundabout or square, 3.9% other.
+  About 48.5% of crashes are at a junction.
+- Crashes per km by road type (graph covers the hull around the region, so
+  denominators are generous): motorway 27.2, trunk 27.6, primary 20.1,
+  secondary 14.4, tertiary 9.0, residential 3.4. Residential streets are 54.5%
+  of the length and 24.2% of snapped crashes.
+- The densest urban blocks reach 200-340 crashes per km, about 10 times the
+  motorway average.
+
   
 ## Open questions
 
