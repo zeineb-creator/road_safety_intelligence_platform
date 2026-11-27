@@ -1,5 +1,6 @@
 import os
-
+import h3
+import numpy as np
 import pandas as pd
 import psycopg
 from dotenv import load_dotenv
@@ -41,12 +42,57 @@ def top_k(score, k):
     tmp = pd.DataFrame({"s": score.values, "c": score.index}, index=score.index)
     return tmp.sort_values(["s", "c"], ascending=[False, True]).index[:k]
 
+pos = {c: i for i, c in enumerate(cells)}
+
+
+def neighbor_pairs(k):
+    """All (cell, neighbor) pairs within k rings, both inside the study cells; includes the cell itself."""
+    rows, cols = [], []
+    for c, i in pos.items():
+        for nb in h3.grid_disk(c, k):
+            j = pos.get(nb)
+            if j is not None:
+                rows.append(i)
+                cols.append(j)
+    return np.array(rows), np.array(cols)
+
+
+def ring_sums(x, k):
+    rows, cols = neighbor_pairs(k)
+    s = np.zeros(len(x))
+    np.add.at(s, rows, x[cols])
+    w = np.bincount(rows, minlength=len(x)).astype(float)
+    return s, w
+
+
+def gi_star(series, k):
+    """Getis-Ord Gi* z-score with binary weights (Ord and Getis, 1995)."""
+    x = series.values.astype(float)
+    n = len(x)
+    s, w = ring_sums(x, k)
+    xbar = x.mean()
+    sd = np.sqrt((x ** 2).mean() - xbar ** 2)
+    z = (s - w * xbar) / (sd * np.sqrt((n * w - w ** 2) / (n - 1)))
+    return pd.Series(z, index=series.index)
+
+
+def smoothed(series, k):
+    s, w = ring_sums(series.values.astype(float), k)
+    return pd.Series(s / w, index=series.index)
+
+
+z1 = gi_star(train["n_crashes"], 1)
+print("cells with Gi* z > 1.96 (1-ring):", int((z1 > 1.96).sum()),
+      "| z > 3.29:", int((z1 > 3.29).sum()), "(not valid significance, see README)")
+
 
 METHODS = {
     "raw count (train)": train["n_crashes"],
     "severity weight (train)": train["severity"],
+    "smoothed count, 1-ring (train)": smoothed(train["n_crashes"], 1),
+    "Gi* z-score, 1-ring (train)": z1,
+    "Gi* z-score, 2-ring (train)": gi_star(train["n_crashes"], 2),
     "ORACLE by crash count (test)": test["n_crashes"],
-    "ORACLE by severity (test)": test["severity"],
 }
 
 rows = []
