@@ -84,7 +84,7 @@ docker compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --topic crashe
 docker compose exec kafka /opt/kafka/bin/kafka-topics.sh --create --topic crashes.dead-letter --bootstrap-server localhost:9092
 ```
 
-Download the BAAC files for 2019-2025 from the [data.gouv.fr dataset](https://www.data.gouv.fr/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2025?resource_id=2ad65965-36a1-4452-9c08-61a6c874e3e6) ("Bases de données annuelles des accidents corporels de la circulation routière") and put the four files of each year in `data/raw/<year>/`. The `data/` folder is not tracked by Git.
+Download the BAAC files for 2019-2025 from the link [https://www.data.gouv.fr/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2025?resource_id=2ad65965-36a1-4452-9c08-61a6c874e3e6](https://www.data.gouv.fr/datasets/bases-de-donnees-annuelles-des-accidents-corporels-de-la-circulation-routiere-annees-de-2005-a-2025?resource_id=2ad65965-36a1-4452-9c08-61a6c874e3e6) ("Bases de données annuelles des accidents corporels de la circulation routière") and put the four files of each year in `data/raw/<year>/`. The `data/` folder is not tracked by Git.
 
 Run the pipeline in order:
 
